@@ -1,6 +1,6 @@
 # 📋 Plan de développement - Application gestionnaire de liens
 
-## 📊 État du projet : 0% (0/111 étapes complétées)
+## 📊 État du projet : 7% (8/111 étapes complétées)
 
 ---
 
@@ -8,17 +8,17 @@
 
 ### 1.1 Configuration de la base de données
 
-- [ ] **1.** Configurer le fichier `.env` avec les credentials MySQL
-- [ ] **2.** Créer la base de données via `doctrine:database:create`
-- [ ] **3.** Vérifier la connexion à la base de données
+- [✅] **1.** Configurer le fichier `.env` avec les credentials MySQL
+- [✅] **2.** Créer la base de données via `doctrine:database:create`
+- [✅] **3.** Vérifier la connexion à la base de données
 
 ### 1.2 Création des entités de base
 
-- [ ] **4.** Créer l'entité `User` (id, email, password, createdAt)
-- [ ] **5.** Créer l'entité `Icon` (id, title, type, imageUrl, backgroundColor, url, parentId, position, userId, createdAt, updatedAt)
-- [ ] **6.** Ajouter les relations entre `User` et `Icon` (OneToMany)
-- [ ] **7.** Ajouter la relation auto-référencée sur `Icon` pour les dossiers (parent/children)
-- [ ] **8.** Générer et exécuter la première migration
+- [✅] **4.** Créer l'entité `User` (id, email, password, createdAt)
+- [✅] **5.** Créer l'entité `Icon` (id, title, type, imageUrl, backgroundColor, url, parentId, position, userId, createdAt, updatedAt)
+- [✅] **6.** Ajouter les relations entre `User` et `Icon` (OneToMany)
+- [✅] **7.** Ajouter la relation auto-référencée sur `Icon` pour les dossiers (parent/children)
+- [✅] **8.** Générer et exécuter la première migration
 
 ### 1.3 Installation des dépendances API
 
