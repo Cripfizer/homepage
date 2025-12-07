@@ -61,8 +61,11 @@ final class RegistrationController extends AbstractController
         $hashedPassword = $passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
 
+        // Set default role to ROLE_USER if no roles provided
         if (!empty($roles) && is_array($roles)) {
             $user->setRoles($roles);
+        } else {
+            $user->setRoles(['ROLE_USER']);
         }
 
         $errors = $validator->validate($user);

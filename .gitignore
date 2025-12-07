@@ -4,3 +4,5 @@ info/
 # JWT Keys (security)
 api/config/jwt/*.pem
 api/.env
+.claude/
+prompts/
