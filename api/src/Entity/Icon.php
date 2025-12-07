@@ -2,47 +2,105 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\IconRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IconRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['icon:read', 'icon:list']]
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['icon:read', 'icon:detail']],
+            provider: \App\State\IconStateProvider::class
+        ),
+        new Post(
+            normalizationContext: ['groups' => ['icon:read']],
+            denormalizationContext: ['groups' => ['icon:write']],
+            processor: \App\State\IconStateProcessor::class
+        ),
+        new Put(
+            normalizationContext: ['groups' => ['icon:read']],
+            denormalizationContext: ['groups' => ['icon:write']],
+            provider: \App\State\IconStateProvider::class,
+            processor: \App\State\IconStateProcessor::class
+        ),
+        new Delete(
+            provider: \App\State\IconStateProvider::class,
+            processor: \App\State\IconStateProcessor::class
+        )
+    ],
+    paginationEnabled: false,
+    security: "is_granted('ROLE_USER')"
+)]
+#[ApiFilter(SearchFilter::class, properties: ['parent' => 'exact'])]
 class Icon
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['icon:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private ?string $title = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['link', 'folder'])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\Length(max: 255)]
     private ?string $imageUrl = null;
 
     #[ORM\Column(length: 7, nullable: true)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\Regex(pattern: '/^#[0-9A-Fa-f]{6}$/')]
     private ?string $backgroundColor = null;
 
     #[ORM\Column(length: 500, nullable: true)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\Length(max: 500)]
+    #[Assert\Url]
     private ?string $url = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[Groups(['icon:read', 'icon:write'])]
     private ?self $parent = null;
 
     /**
      * @var Collection<int, Icon>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent', orphanRemoval: true)]
+    #[Groups(['icon:detail'])]
     private Collection $children;
 
     #[ORM\Column]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\NotNull]
+    #[Assert\PositiveOrZero]
     private ?int $position = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'icons')]
@@ -50,9 +108,11 @@ class Icon
     private ?User $user = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['icon:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['icon:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
