@@ -1,6 +1,6 @@
 # 📋 Plan de développement - Application gestionnaire de liens
 
-## 📊 État du projet : 18% (20/111 étapes complétées)
+## 📊 État du projet : 30% (33/111 étapes complétées)
 
 ---
 
@@ -51,25 +51,25 @@
 
 ### 3.1 Endpoints de base
 
-- [ ] **21.** Créer le endpoint GET `/api/icons` (liste des icônes racine de l'utilisateur connecté)
-- [ ] **22.** Créer le endpoint GET `/api/icons/{id}` (détails d'une icône)
-- [ ] **23.** Créer le endpoint GET `/api/icons/{id}/children` (liste des icônes enfants d'un dossier)
-- [ ] **24.** Créer le endpoint POST `/api/icons` (création d'une icône)
-- [ ] **25.** Créer le endpoint PUT `/api/icons/{id}` (modification d'une icône)
-- [ ] **26.** Créer le endpoint DELETE `/api/icons/{id}` (suppression d'une icône)
+- [✅] **21.** Créer le endpoint GET `/api/icons` (liste des icônes racine de l'utilisateur connecté)
+- [✅] **22.** Créer le endpoint GET `/api/icons/{id}` (détails d'une icône)
+- [✅] **23.** Créer le endpoint GET `/api/icons/{id}/children` (liste des icônes enfants d'un dossier)
+- [✅] **24.** Créer le endpoint POST `/api/icons` (création d'une icône)
+- [✅] **25.** Créer le endpoint PUT `/api/icons/{id}` (modification d'une icône)
+- [✅] **26.** Créer le endpoint DELETE `/api/icons/{id}` (suppression d'une icône)
 
 ### 3.2 Validation et sécurité
 
-- [ ] **27.** Ajouter les validations sur l'entité `Icon` (contraintes Assert)
-- [ ] **28.** Vérifier que l'utilisateur ne peut accéder qu'à ses propres icônes
-- [ ] **29.** Gérer la suppression en cascade des icônes enfants lors de la suppression d'un dossier
-- [ ] **30.** Tester tous les endpoints avec Postman/Insomnia
+- [✅] **27.** Ajouter les validations sur l'entité `Icon` (contraintes Assert)
+- [✅] **28.** Vérifier que l'utilisateur ne peut accéder qu'à ses propres icônes
+- [✅] **29.** Gérer la suppression en cascade des icônes enfants lors de la suppression d'un dossier
+- [✅] **30.** Tester tous les endpoints avec Postman/Insomnia
 
 ### 3.3 Gestion du réordonnancement
 
-- [ ] **31.** Créer le endpoint PATCH `/api/icons/reorder` (mise à jour des positions)
-- [ ] **32.** Valider l'ordre des positions (pas de doublons, séquence correcte)
-- [ ] **33.** Tester le réordonnancement via l'API
+- [✅] **31.** Créer le endpoint PATCH `/api/icons/reorder` (mise à jour des positions)
+- [✅] **32.** Valider l'ordre des positions (pas de doublons, séquence correcte)
+- [✅] **33.** Tester le réordonnancement via l'API
 
 ---
 
@@ -77,17 +77,17 @@
 
 ### 4.1 Configuration upload
 
-- [ ] **34.** Installer VichUploaderBundle (`composer require vich/uploader-bundle`)
-- [ ] **35.** Configurer le dossier de destination des uploads (`public/uploads/icons`)
-- [ ] **36.** Ajouter le champ `imageFile` à l'entité `Icon` avec Vich
+- [✅] **34.** Installer VichUploaderBundle (`composer require vich/uploader-bundle`)
+- [✅] **35.** Configurer le dossier de destination des uploads (`public/uploads/icons`)
+- [✅] **36.** Ajouter le champ `imageFile` à l'entité `Icon` avec Vich
 
 ### 4.2 Endpoint upload
 
-- [ ] **37.** Créer le endpoint POST `/api/icons/{id}/upload-image` (upload image)
-- [ ] **38.** Limiter les formats acceptés (jpg, png, svg, webp)
-- [ ] **39.** Limiter la taille max (2Mo recommandé)
-- [ ] **40.** Retourner l'URL publique de l'image uploadée
-- [ ] **41.** Tester l'upload d'image via Postman
+- [✅] **37.** Créer le endpoint POST `/api/icons/{id}/upload-image` (upload image)
+- [✅] **38.** Limiter les formats acceptés (jpg, png, svg, webp)
+- [✅] **39.** Limiter la taille max (2Mo recommandé)
+- [✅] **40.** Retourner l'URL publique de l'image uploadée
+- [✅] **41.** Tester l'upload d'image via Postman
 
 ---
 

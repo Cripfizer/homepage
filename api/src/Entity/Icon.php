@@ -15,11 +15,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: IconRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 #[ApiResource(
     operations: [
         new GetCollection(
@@ -114,6 +117,20 @@ class Icon
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['icon:read'])]
     private ?\DateTimeInterface $updatedAt = null;
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     */
+    #[Vich\UploadableField(mapping: 'icon_images', fileNameProperty: 'imageUrl', size: 'imageSize')]
+    #[Assert\File(
+        maxSize: '2M',
+        mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
+        mimeTypesMessage: 'Please upload a valid image (JPEG, PNG, GIF, WEBP, SVG)'
+    )]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $imageSize = null;
 
     public function __construct()
     {
@@ -280,5 +297,30 @@ class Icon
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        // VERY IMPORTANT: Update updatedAt to force Doctrine to update the entity
+        if (null !== $imageFile) {
+            $this->updatedAt = new \DateTime();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageSize(?int $imageSize): void
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function getImageSize(): ?int
+    {
+        return $this->imageSize;
     }
 }

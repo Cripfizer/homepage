@@ -1,0 +1,12 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        icon_images:
+            uri_prefix: /uploads/icons
+            upload_destination: '%kernel.project_dir%/public/uploads/icons'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+
+            # Supprime les anciens fichiers lors de la mise à jour
+            delete_on_update: true
+            delete_on_remove: true
