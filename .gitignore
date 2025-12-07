@@ -1,2 +1,6 @@
 # Dossier de documentation interne
 info/
+
+# JWT Keys (security)
+api/config/jwt/*.pem
+api/.env

@@ -1,6 +1,6 @@
 # 📋 Plan de développement - Application gestionnaire de liens
 
-## 📊 État du projet : 7% (8/111 étapes complétées)
+## 📊 État du projet : 11% (12/111 étapes complétées)
 
 ---
 
@@ -22,10 +22,10 @@
 
 ### 1.3 Installation des dépendances API
 
-- [ ] **9.** Installer LexikJWTAuthenticationBundle pour JWT (`composer require lexik/jwt-authentication-bundle`)
-- [ ] **10.** Générer les clés SSL pour JWT (`php bin/console lexik:jwt:generate-keypair`)
-- [ ] **11.** Configurer le security.yaml pour l'authentification JWT
-- [ ] **12.** Installer le bundle de validation (`composer require symfony/validator`)
+- [✅] **9.** Installer LexikJWTAuthenticationBundle pour JWT (`composer require lexik/jwt-authentication-bundle`)
+- [✅] **10.** Générer les clés SSL pour JWT (`php bin/console lexik:jwt:generate-keypair`)
+- [✅] **11.** Configurer le security.yaml pour l'authentification JWT
+- [✅] **12.** Installer le bundle de validation (`composer require symfony/validator`)
 
 ---
 
