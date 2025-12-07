@@ -1,6 +1,6 @@
 # 📋 Plan de développement - Application gestionnaire de liens
 
-## 📊 État du projet : 11% (12/111 étapes complétées)
+## 📊 État du projet : 18% (20/111 étapes complétées)
 
 ---
 
@@ -33,17 +33,17 @@
 
 ### 2.1 Endpoints d'authentification
 
-- [ ] **13.** Créer le endpoint POST `/api/register` (inscription)
-- [ ] **14.** Hasher le mot de passe dans le contrôleur d'inscription
-- [ ] **15.** Créer le endpoint POST `/api/login` (connexion - retourne JWT)
-- [ ] **16.** Tester l'inscription avec Postman/Insomnia
-- [ ] **17.** Tester la connexion et récupération du token JWT
+- [✅] **13.** Créer le endpoint POST `/api/register` (inscription)
+- [✅] **14.** Hasher le mot de passe dans le contrôleur d'inscription
+- [✅] **15.** Créer le endpoint POST `/api/login` (connexion - retourne JWT)
+- [✅] **16.** Tester l'inscription avec Postman/Insomnia
+- [✅] **17.** Tester la connexion et récupération du token JWT
 
 ### 2.2 Protection des routes
 
-- [ ] **18.** Configurer les routes API pour nécessiter l'authentification JWT
-- [ ] **19.** Tester l'accès aux routes protégées sans token (doit échouer)
-- [ ] **20.** Tester l'accès aux routes protégées avec token valide (doit réussir)
+- [✅] **18.** Configurer les routes API pour nécessiter l'authentification JWT
+- [✅] **19.** Tester l'accès aux routes protégées sans token (doit échouer)
+- [✅] **20.** Tester l'accès aux routes protégées avec token valide (doit réussir)
 
 ---
 
