@@ -95,10 +95,10 @@
 
 ### 5.1 Installation des dépendances
 
-- [ ] **42.** Installer Angular Material (`ng add @angular/material`)
-- [ ] **43.** Choisir un thème sombre (Dark theme)
-- [ ] **44.** Installer les modules nécessaires (HttpClient, FormsModule, ReactiveFormsModule)
-- [ ] **45.** Configurer les imports globaux dans `app.config.ts`
+- [✅] **42.** Installer Angular Material (`ng add @angular/material`)
+- [✅] **43.** Choisir un thème sombre (Dark theme)
+- [✅] **44.** Installer les modules nécessaires (HttpClient, FormsModule, ReactiveFormsModule)
+- [✅] **45.** Configurer les imports globaux dans `app.config.ts`
 
 ### 5.2 Configuration HTTP et environnements
 
