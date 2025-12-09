@@ -7,15 +7,22 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const token = localStorage.getItem('jwt_token');
 
-  // Clone the request and add authorization header if token exists
-  let authReq = req;
+  // Prepare headers object
+  const headers: any = {};
+
+  // Add Authorization header if token exists
   if (token) {
-    authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    headers['Authorization'] = `Bearer ${token}`;
   }
+
+  // Add Content-Type and Accept headers for API Platform
+  if (req.url.includes('/api/')) {
+    headers['Content-Type'] = 'application/ld+json';
+    headers['Accept'] = 'application/ld+json';
+  }
+
+  // Clone the request with headers
+  const authReq = req.clone({ setHeaders: headers });
 
   // Handle the request and catch 401 errors
   return next(authReq).pipe(

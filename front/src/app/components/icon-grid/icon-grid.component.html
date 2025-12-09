@@ -1,0 +1,46 @@
+<!-- Loading state -->
+@if (isLoading) {
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">Loading your icons...</p>
+  </div>
+}
+
+<!-- Error state -->
+@if (error && !isLoading) {
+  <div class="error-container">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p class="error-text">{{ error }}</p>
+    <button class="retry-button" (click)="loadIcons()">Retry</button>
+  </div>
+}
+
+<!-- Empty state -->
+@if (!isLoading && !error && icons.length === 0) {
+  <div class="empty-container">
+    <mat-icon class="empty-icon">inbox</mat-icon>
+    <p class="empty-title">No icons yet</p>
+    <p class="empty-text">Click the "Add New" button to create your first icon!</p>
+  </div>
+}
+
+<!-- Icon grid -->
+@if (!isLoading && !error && icons.length > 0) {
+  <div class="icon-grid">
+    <!-- Regular icons -->
+    @for (icon of icons; track icon.id) {
+      <app-icon-item
+        [icon]="icon"
+        (folderClick)="onFolderClick($event)"
+      ></app-icon-item>
+    }
+
+    <!-- Add new button -->
+    <div class="add-new-container" (click)="onAddNewClick()">
+      <div class="add-new-card">
+        <mat-icon class="add-icon">add_circle_outline</mat-icon>
+      </div>
+      <div class="add-text">Ajouter</div>
+    </div>
+  </div>
+}

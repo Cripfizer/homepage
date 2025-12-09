@@ -5,8 +5,10 @@ import { Icon } from '../models/icon.model';
 import { environment } from '../../environments/environment';
 
 interface HydraCollection {
-  'hydra:member': any[];
-  'hydra:totalItems': number;
+  'member': any[];
+  'totalItems': number;
+  'hydra:member'?: any[]; // Fallback for older API Platform versions
+  'hydra:totalItems'?: number;
 }
 
 @Injectable({
@@ -23,7 +25,13 @@ export class IconService {
     }
 
     return this.http.get<HydraCollection>(url).pipe(
-      map(response => response['hydra:member'] as Icon[])
+      map(response => {
+        console.log('Raw API response:', response);
+        // Try both 'member' and 'hydra:member' for compatibility
+        const items = response['member'] || response['hydra:member'] || [];
+        console.log('Extracted items:', items);
+        return items as Icon[];
+      })
     );
   }
 

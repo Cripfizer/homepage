@@ -1,0 +1,30 @@
+<div class="icon-container" (click)="onClick()">
+  <div
+    class="icon-card"
+    [style.background-color]="getBackgroundColor()"
+  >
+    <!-- Display uploaded image if available -->
+    @if (icon.imageUrl) {
+      <img
+        [src]="icon.imageUrl"
+        [alt]="icon.title"
+        class="icon-image"
+      />
+    }
+
+    <!-- Display Material icon if no image -->
+    @if (!icon.imageUrl) {
+      <mat-icon
+        class="icon-material"
+        [style.color]="getTextColor()"
+      >
+        {{ getMaterialIconName() }}
+      </mat-icon>
+    }
+  </div>
+
+  <!-- Display title below the icon -->
+  <div class="icon-title">
+    {{ icon.title }}
+  </div>
+</div>

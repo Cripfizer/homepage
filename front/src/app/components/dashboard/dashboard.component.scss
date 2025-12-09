@@ -1,12 +1,33 @@
+// Toolbar styling
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  .toolbar-icon {
+    margin-right: 8px;
+  }
+
+  .toolbar-title {
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  button {
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
 .spacer {
   flex: 1 1 auto;
 }
 
+// Dashboard content area
 .dashboard-content {
-  padding: 20px;
-  text-align: center;
-
-  h1 {
-    margin-top: 40px;
-  }
+  background-color: #121212;
+  min-height: calc(100vh - 64px);
+  padding: 0;
 }
