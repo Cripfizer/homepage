@@ -2,6 +2,14 @@
   <mat-icon class="toolbar-icon">home</mat-icon>
   <span class="toolbar-title">Homepage</span>
   <span class="spacer"></span>
+  <button
+    mat-raised-button
+    [color]="editMode ? 'warn' : 'accent'"
+    (click)="toggleEditMode()"
+  >
+    <mat-icon>edit</mat-icon>
+    Mode édition
+  </button>
   <button mat-raised-button color="accent" (click)="logout()">
     <mat-icon>logout</mat-icon>
     Logout
@@ -9,5 +17,5 @@
 </mat-toolbar>
 
 <div class="dashboard-content">
-  <app-icon-grid></app-icon-grid>
+  <app-icon-grid [editMode]="editMode"></app-icon-grid>
 </div>

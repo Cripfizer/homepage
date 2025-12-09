@@ -1,19 +1,23 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { Icon } from '../../models/icon.model';
 import { getContrastColor } from '../../utils/color.utils';
 
 @Component({
   selector: 'app-icon-item',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './icon-item.component.html',
   styleUrls: ['./icon-item.component.scss']
 })
 export class IconItemComponent {
   @Input() icon!: Icon;
+  @Input() editMode = false;
   @Output() folderClick = new EventEmitter<Icon>();
+  @Output() editClick = new EventEmitter<Icon>();
+  @Output() deleteClick = new EventEmitter<Icon>();
 
   /**
    * Get the contrast color (text/icon color) based on the background color
@@ -36,8 +40,13 @@ export class IconItemComponent {
    * Handle click on the icon
    * - If type is 'link': open URL in new tab
    * - If type is 'folder': emit event for parent to handle navigation
+   * - In edit mode: do nothing
    */
   onClick(): void {
+    if (this.editMode) {
+      return; // Disable normal click behavior in edit mode
+    }
+
     if (this.icon.type === 'link' && this.icon.url) {
       window.open(this.icon.url, '_blank');
     } else if (this.icon.type === 'folder') {
@@ -46,12 +55,31 @@ export class IconItemComponent {
   }
 
   /**
-   * Get the Material icon name based on icon type
+   * Handle edit button click
+   */
+  onEditClick(event: Event): void {
+    event.stopPropagation();
+    this.editClick.emit(this.icon);
+  }
+
+  /**
+   * Handle delete button click
+   */
+  onDeleteClick(event: Event): void {
+    event.stopPropagation();
+    this.deleteClick.emit(this.icon);
+  }
+
+  /**
+   * Get the Material icon name
+   * Uses the custom icon name if set, otherwise defaults based on type
    */
   getMaterialIconName(): string {
-    if (this.icon.type === 'folder') {
-      return 'folder';
+    if (this.icon.materialIconName) {
+      // Material icon names must be lowercase
+      return this.icon.materialIconName.toLowerCase().trim();
     }
-    return 'link';
+    // Default icons based on type
+    return this.icon.type === 'folder' ? 'folder' : 'link';
   }
 }

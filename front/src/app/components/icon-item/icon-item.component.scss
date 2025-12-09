@@ -5,12 +5,12 @@
   gap: 6px;
   cursor: pointer;
 
-  &:hover .icon-card {
+  &:hover .icon-card:not(.edit-mode) {
     transform: scale(1.1);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
   }
 
-  &:active .icon-card {
+  &:active .icon-card:not(.edit-mode) {
     transform: scale(0.95);
   }
 }
@@ -24,16 +24,22 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   padding: 8px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 8px;
   box-sizing: border-box;
 
+  // Image uploaded: fill entire card
   .icon-image {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
+  // Material icon: centered with padding (default behavior)
   .icon-material {
     font-size: 48px;
     width: 48px;
@@ -41,6 +47,71 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    // Let Angular Material handle the font-family via fontSet
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+  }
+
+  // Edit mode styling
+  &.edit-mode {
+    cursor: default;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  // Edit actions buttons
+  .edit-actions {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+
+    button {
+      width: 28px;
+      height: 28px;
+      min-height: 28px;
+      line-height: 28px;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+      }
+
+      &.edit-btn {
+        background-color: rgba(33, 150, 243, 0.9);
+        color: white;
+
+        &:hover {
+          background-color: rgba(33, 150, 243, 1);
+        }
+      }
+
+      &.delete-btn {
+        background-color: rgba(211, 47, 47, 0.9);
+        color: white;
+
+        &:hover {
+          background-color: rgba(211, 47, 47, 1);
+        }
+      }
+    }
   }
 }
 

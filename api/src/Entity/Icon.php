@@ -77,6 +77,11 @@ class Icon
     #[Assert\Length(max: 255)]
     private ?string $imageUrl = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\Length(max: 50)]
+    private ?string $materialIconName = null;
+
     #[ORM\Column(length: 7, nullable: true)]
     #[Groups(['icon:read', 'icon:write'])]
     #[Assert\Regex(pattern: '/^#[0-9A-Fa-f]{6}$/')]
@@ -137,6 +142,7 @@ class Icon
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->children = new ArrayCollection();
+        $this->position = 0; // Default position, will be adjusted by processor
     }
 
     #[ORM\PreUpdate]
@@ -176,12 +182,46 @@ class Icon
 
     public function getImageUrl(): ?string
     {
-        return $this->imageUrl;
+        if (!$this->imageUrl) {
+            return null;
+        }
+
+        // In development, use localhost:8000
+        // In production, this will use the actual domain
+        $baseUrl = $_SERVER['REQUEST_SCHEME'] ?? 'http';
+        $baseUrl .= '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost:8000');
+
+        return $baseUrl . '/uploads/icons/' . $this->imageUrl;
     }
 
     public function setImageUrl(?string $imageUrl): static
     {
+        if (!$imageUrl) {
+            $this->imageUrl = null;
+            return $this;
+        }
+
+        // Remove full URL or /uploads/icons/ prefix if present before storing
+        // Extract only the filename
+        if (str_contains($imageUrl, '/uploads/icons/')) {
+            // Extract everything after /uploads/icons/
+            $parts = explode('/uploads/icons/', $imageUrl);
+            $imageUrl = end($parts);
+        }
+
         $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    public function getMaterialIconName(): ?string
+    {
+        return $this->materialIconName;
+    }
+
+    public function setMaterialIconName(?string $materialIconName): static
+    {
+        $this->materialIconName = $materialIconName;
 
         return $this;
     }

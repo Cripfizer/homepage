@@ -57,8 +57,8 @@ export class IconService {
 
   uploadImage(iconId: number, file: File): Observable<Icon> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('image', file);
 
-    return this.http.post<Icon>(`${this.apiUrl}/${iconId}/upload`, formData);
+    return this.http.post<Icon>(`${this.apiUrl}/${iconId}/upload-image`, formData);
   }
 }

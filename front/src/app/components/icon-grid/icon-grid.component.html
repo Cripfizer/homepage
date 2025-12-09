@@ -31,7 +31,10 @@
     @for (icon of icons; track icon.id) {
       <app-icon-item
         [icon]="icon"
+        [editMode]="editMode"
         (folderClick)="onFolderClick($event)"
+        (editClick)="onEditClick($event)"
+        (deleteClick)="onDeleteClick($event)"
       ></app-icon-item>
     }
 

@@ -44,4 +44,26 @@ class IconRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Get the maximum position for icons of a user at a given level
+     */
+    public function getMaxPosition($user, ?Icon $parent = null): int
+    {
+        $qb = $this->createQueryBuilder('i')
+            ->select('MAX(i.position)')
+            ->andWhere('i.user = :user')
+            ->setParameter('user', $user);
+
+        if ($parent === null) {
+            $qb->andWhere('i.parent IS NULL');
+        } else {
+            $qb->andWhere('i.parent = :parent')
+               ->setParameter('parent', $parent);
+        }
+
+        $result = $qb->getQuery()->getSingleScalarResult();
+
+        return $result ?? -1;
+    }
 }

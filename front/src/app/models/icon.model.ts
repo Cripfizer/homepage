@@ -3,6 +3,7 @@ export interface Icon {
   title: string;
   type: 'link' | 'folder';
   imageUrl?: string;
+  materialIconName?: string;
   imageSize?: 'small' | 'medium' | 'large';
   backgroundColor?: string;
   url?: string;

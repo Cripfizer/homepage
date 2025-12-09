@@ -1,0 +1,92 @@
+<h2 mat-dialog-title>{{ data.mode === 'create' ? 'Nouvelle icône' : 'Modifier l\'icône' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="iconForm" class="icon-form">
+    <!-- Title -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Titre</mat-label>
+      <input matInput formControlName="title" maxlength="50" required>
+      @if (iconForm.get('title')?.hasError('required')) {
+        <mat-error>Le titre est requis</mat-error>
+      }
+      @if (iconForm.get('title')?.hasError('maxlength')) {
+        <mat-error>Le titre ne peut pas dépasser 50 caractères</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Type -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option value="link">Lien</mat-option>
+        <mat-option value="folder">Dossier</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- URL (shown only if type is 'link') -->
+    @if (iconForm.get('type')?.value === 'link') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>URL</mat-label>
+        <input matInput formControlName="url" type="url" placeholder="https://example.com">
+        @if (iconForm.get('url')?.hasError('required')) {
+          <mat-error>L'URL est requise pour un lien</mat-error>
+        }
+        @if (iconForm.get('url')?.hasError('pattern')) {
+          <mat-error>L'URL doit commencer par http:// ou https://</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <!-- Background Color -->
+    <div class="color-picker-container">
+      <label class="color-label">Couleur de fond</label>
+      <input type="color" formControlName="backgroundColor" class="color-picker">
+      <span class="color-value">{{ iconForm.get('backgroundColor')?.value }}</span>
+    </div>
+
+    <!-- Icon Source Selection -->
+    <mat-radio-group formControlName="iconSource" class="icon-source-group">
+      <mat-radio-button value="material">Icône Material</mat-radio-button>
+      <mat-radio-button value="upload">Upload Image</mat-radio-button>
+    </mat-radio-group>
+
+    <!-- Material Icon Name (shown if iconSource is 'material') -->
+    @if (iconForm.get('iconSource')?.value === 'material') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nom de l'icône Material</mat-label>
+        <input matInput formControlName="materialIconName" placeholder="neurology, folder, home, etc.">
+        <mat-hint>En minuscules. Voir: <a href="https://fonts.google.com/icons" target="_blank">Material Icons</a></mat-hint>
+      </mat-form-field>
+    }
+
+    <!-- Image Upload (shown if iconSource is 'upload') -->
+    @if (iconForm.get('iconSource')?.value === 'upload') {
+      <div class="file-upload-container">
+        <label class="file-label">Image</label>
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/svg+xml"
+          (change)="onFileSelected($event)"
+          class="file-input"
+        >
+        @if (selectedFile) {
+          <span class="file-name">{{ selectedFile.name }}</span>
+        }
+      </div>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+    Annuler
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="iconForm.invalid || isSubmitting"
+  >
+    {{ isSubmitting ? 'Enregistrement...' : 'Enregistrer' }}
+  </button>
+</mat-dialog-actions>

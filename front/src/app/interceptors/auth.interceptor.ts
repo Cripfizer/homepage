@@ -16,7 +16,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   // Add Content-Type and Accept headers for API Platform
-  if (req.url.includes('/api/')) {
+  // BUT NOT for file upload requests (FormData sets its own Content-Type with boundary)
+  const isFileUpload = req.body instanceof FormData;
+  if (req.url.includes('/api/') && !isFileUpload) {
     headers['Content-Type'] = 'application/ld+json';
     headers['Accept'] = 'application/ld+json';
   }

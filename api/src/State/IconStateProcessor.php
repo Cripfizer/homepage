@@ -36,6 +36,14 @@ class IconStateProcessor implements ProcessorInterface
         // POST - Création d'une nouvelle icône
         if ($operation->getMethod() === 'POST') {
             $data->setUser($user);
+
+            // Auto-assign position if not set (or is default 0)
+            if ($data->getPosition() === null || $data->getPosition() === 0) {
+                // Get the max position for this user and parent
+                $maxPosition = $this->iconRepository->getMaxPosition($user, $data->getParent());
+                $data->setPosition($maxPosition + 1);
+            }
+
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
 
