@@ -69,6 +69,15 @@ class IconStateProcessor implements ProcessorInterface
             // Réassigner l'utilisateur car la désérialisation l'a mis à null
             $data->setUser($user);
 
+            // IMPORTANT: Préserver les champs d'image de VichUploader si aucun nouveau fichier n'est uploadé
+            // La désérialisation met imageFile à null, ce qui déclenche la suppression de l'ancienne image
+            if ($data->getImageFile() === null && $originalIcon->getImageUrl() !== null) {
+                // Aucun nouveau fichier uploadé, préserver l'image existante
+                $data->setImageUrl($originalIcon->getImageUrl());
+                $data->setImageSize($originalIcon->getImageSize());
+                $data->setUpdatedAt($originalIcon->getUpdatedAt());
+            }
+
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
 

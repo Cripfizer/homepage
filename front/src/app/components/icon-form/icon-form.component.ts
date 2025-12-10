@@ -114,9 +114,27 @@ export class IconFormComponent implements OnInit {
           title: formValue.title,
           type: formValue.type,
           url: formValue.url || null,
-          backgroundColor: formValue.backgroundColor,
-          materialIconName: formValue.iconSource === 'material' ? formValue.materialIconName : null
+          backgroundColor: formValue.backgroundColor
         };
+
+        // Handle icon source
+        if (formValue.iconSource === 'material') {
+          // Use material icon
+          iconData.materialIconName = formValue.materialIconName;
+        } else if (formValue.iconSource === 'upload') {
+          // If uploading a new file, clear material icon name
+          if (this.selectedFile) {
+            iconData.materialIconName = undefined;
+          }
+          // If editing without new file, preserve existing materialIconName to keep the image
+          else if (this.data.mode === 'edit' && this.data.icon?.materialIconName !== undefined) {
+            iconData.materialIconName = this.data.icon.materialIconName;
+          }
+          // For create mode without file
+          else {
+            iconData.materialIconName = undefined;
+          }
+        }
 
         // For create mode, set parent to current folder if inside one
         if (this.data.mode === 'create') {
