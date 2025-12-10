@@ -1,6 +1,27 @@
 <mat-toolbar color="primary" class="toolbar">
+  <!-- Back button - visible only when not at root -->
+  @if (showBackButton) {
+    <button mat-icon-button (click)="navigateBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  }
+
   <mat-icon class="toolbar-icon">home</mat-icon>
   <span class="toolbar-title">Homepage</span>
+
+  <!-- Breadcrumb -->
+  @if (breadcrumb.length > 0) {
+    <div class="breadcrumb">
+      <span class="breadcrumb-item" (click)="navigateToRoot()">Accueil</span>
+      @for (folder of breadcrumb; track folder.id; let i = $index) {
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" [class.breadcrumb-current]="i === breadcrumb.length - 1" (click)="navigateTo(i)">
+          {{ folder.title }}
+        </span>
+      }
+    </div>
+  }
+
   <span class="spacer"></span>
   <button
     mat-raised-button

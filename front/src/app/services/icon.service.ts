@@ -21,15 +21,14 @@ export class IconService {
   getIcons(parentId?: number): Observable<Icon[]> {
     let url = this.apiUrl;
     if (parentId !== undefined) {
-      url += `?parent=${parentId}`;
+      // Use IRI format for parent filter as required by API Platform
+      url += `?parent=/api/icons/${parentId}`;
     }
 
     return this.http.get<HydraCollection>(url).pipe(
       map(response => {
-        console.log('Raw API response:', response);
         // Try both 'member' and 'hydra:member' for compatibility
         const items = response['member'] || response['hydra:member'] || [];
-        console.log('Extracted items:', items);
         return items as Icon[];
       })
     );
@@ -52,7 +51,8 @@ export class IconService {
   }
 
   reorderIcons(updates: { id: number; position: number }[]): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/reorder`, { updates });
+    // API expects: {"icons": [{"id": 1, "position": 0}, ...]}
+    return this.http.patch<void>(`${this.apiUrl}/reorder`, { icons: updates });
   }
 
   uploadImage(iconId: number, file: File): Observable<Icon> {

@@ -1,3 +1,8 @@
+// Grid wrapper
+.icon-grid-wrapper {
+  width: 100%;
+}
+
 // Grid container - auto-fit with minimum size
 .icon-grid {
   display: grid;
@@ -16,6 +21,85 @@
   // Tablet and up: more gap
   @media (min-width: 600px) {
     gap: 24px 20px;
+  }
+
+  // Drag & drop styling
+  &.cdk-drop-list-dragging {
+    cursor: grabbing;
+
+    // Disable all transitions during drag to avoid flash effect
+    .icon-drag-wrapper {
+      transition: none !important;
+
+      * {
+        transition: none !important;
+      }
+    }
+  }
+}
+
+// Wrapper for each draggable icon
+.icon-drag-wrapper {
+  width: 70px;
+
+  &.cdk-drag {
+    cursor: grab;
+    transition: none; // Remove transition to avoid flash effect
+
+    &.cdk-drag-disabled {
+      cursor: default;
+    }
+  }
+
+  // Disable all transitions during drag operations
+  &:not(.cdk-drag-disabled) {
+    transition: none !important;
+  }
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  opacity: 0.9;
+  border-radius: 8px;
+
+  // Ensure preview maintains size
+  width: 70px;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  width: 70px;
+  height: 90px;
+}
+
+.cdk-drag-animating {
+  transition: none; // Disable animation to avoid flash effect
+}
+
+// Empty message (shown in grid when no icons)
+.empty-message-in-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 70px;
+
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .empty-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    margin: 0;
+    text-align: center;
+    max-width: 70px;
   }
 }
 
@@ -128,34 +212,3 @@
   }
 }
 
-// Empty state
-.empty-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  padding: 40px;
-  text-align: center;
-
-  .empty-icon {
-    font-size: 96px;
-    width: 96px;
-    height: 96px;
-    color: rgba(255, 255, 255, 0.3);
-    margin-bottom: 16px;
-  }
-
-  .empty-title {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 20px;
-    font-weight: 500;
-    margin: 0 0 8px 0;
-  }
-
-  .empty-text {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
-    margin: 0;
-  }
-}

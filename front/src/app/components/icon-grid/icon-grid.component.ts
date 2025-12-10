@@ -1,13 +1,17 @@
-import { Component, OnInit, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { Subject, takeUntil } from 'rxjs';
 import { IconItemComponent } from '../icon-item/icon-item.component';
 import { IconFormComponent } from '../icon-form/icon-form.component';
 import { IconService } from '../../services/icon.service';
+import { NavigationService } from '../../services/navigation.service';
 import { Icon } from '../../models/icon.model';
+import { folderTransition } from '../../animations/folder-transition.animations';
 
 @Component({
   selector: 'app-icon-grid',
@@ -16,47 +20,83 @@ import { Icon } from '../../models/icon.model';
     CommonModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    IconItemComponent
+    IconItemComponent,
+    CdkDropList,
+    CdkDrag
   ],
   templateUrl: './icon-grid.component.html',
-  styleUrls: ['./icon-grid.component.scss']
+  styleUrls: ['./icon-grid.component.scss'],
+  animations: [folderTransition]
 })
-export class IconGridComponent implements OnInit {
+export class IconGridComponent implements OnInit, OnDestroy {
   private iconService = inject(IconService);
+  private navigationService = inject(NavigationService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private destroy$ = new Subject<void>();
 
   @Input() editMode = false;
 
   icons: Icon[] = [];
   isLoading = true;
   error: string | null = null;
+  animationState: 'visible' | 'hidden' = 'visible'; // For animation control
+  currentFolder: Icon | null = null;
 
   ngOnInit(): void {
-    this.loadIcons();
+    // Subscribe to navigation changes
+    this.navigationService.getCurrentFolder()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(folder => {
+        this.currentFolder = folder;
+        this.loadIconsWithAnimation(folder);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
-   * Load root-level icons from the API
+   * Load icons with fade animation
    */
-  loadIcons(): void {
+  private async loadIconsWithAnimation(folder: Icon | null): Promise<void> {
+    // Fade out
+    this.animationState = 'hidden';
+    await this.delay(200); // Wait for fade-out animation
+
+    // Load icons
+    this.loadIcons(folder);
+  }
+
+  /**
+   * Load icons from the API based on current folder
+   */
+  loadIcons(folder?: Icon | null): void {
+    // If no folder provided, use current folder
+    if (folder === undefined) {
+      folder = this.currentFolder;
+    }
+
     this.isLoading = true;
     this.error = null;
 
-    console.log('Loading icons...');
-    this.iconService.getIcons().subscribe({
+    const parentId = folder?.id;
+
+    this.iconService.getIcons(parentId).subscribe({
       next: (icons) => {
-        console.log('Icons received:', icons);
         this.icons = (icons || []).sort((a, b) => a.position - b.position);
         this.isLoading = false;
-        console.log('Loading complete, isLoading:', this.isLoading, 'icons count:', this.icons.length);
+        this.animationState = 'visible'; // Fade in
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading icons:', err);
         this.error = 'Failed to load icons. Please try again.';
         this.isLoading = false;
+        this.animationState = 'visible';
         this.icons = [];
         this.cdr.detectChanges();
       }
@@ -64,11 +104,20 @@ export class IconGridComponent implements OnInit {
   }
 
   /**
-   * Handle folder click (will be implemented in Sprint 4)
+   * Delay helper for animations
+   */
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Handle folder click - navigate into folder
    */
   onFolderClick(icon: Icon): void {
-    console.log('Folder clicked:', icon.title);
-    // Navigation will be implemented in Sprint 4
+    if (this.editMode) {
+      return; // Don't navigate in edit mode
+    }
+    this.navigationService.navigateToFolder(icon);
   }
 
   /**
@@ -130,7 +179,7 @@ export class IconGridComponent implements OnInit {
     this.iconService.deleteIcon(icon.id).subscribe({
       next: () => {
         this.snackBar.open('Icône supprimée avec succès', 'Fermer', { duration: 3000 });
-        this.loadIcons();
+        this.loadIcons(this.currentFolder);
       },
       error: (err) => {
         console.error('Error deleting icon:', err);
@@ -141,6 +190,41 @@ export class IconGridComponent implements OnInit {
           errorMessage = 'Impossible de se connecter au serveur';
         }
         this.snackBar.open(errorMessage, 'Fermer', { duration: 5000 });
+      }
+    });
+  }
+
+  /**
+   * Handle drag and drop reordering
+   */
+  onDrop(event: CdkDragDrop<Icon[]>): void {
+    if (!this.editMode) {
+      return; // Only allow reordering in edit mode
+    }
+
+    // Store original order in case we need to revert
+    const originalIcons = [...this.icons];
+
+    // Reorder the icons array
+    moveItemInArray(this.icons, event.previousIndex, event.currentIndex);
+
+    // Update position property on each icon
+    const updates = this.icons.map((icon, index) => ({
+      id: icon.id!,
+      position: index
+    }));
+
+    // Save to API
+    this.iconService.reorderIcons(updates).subscribe({
+      next: () => {
+        this.snackBar.open('Ordre sauvegardé', 'OK', { duration: 2000 });
+      },
+      error: (err) => {
+        console.error('Error reordering icons:', err);
+        // Revert to original order on error
+        this.icons = originalIcons;
+        this.snackBar.open('Erreur de sauvegarde', 'OK', { duration: 3000 });
+        this.cdr.detectChanges();
       }
     });
   }

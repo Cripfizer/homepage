@@ -9,6 +9,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { IconService } from '../../services/icon.service';
+import { NavigationService } from '../../services/navigation.service';
 import { Icon } from '../../models/icon.model';
 import { environment } from '../../../environments/environment';
 
@@ -37,6 +38,7 @@ export interface IconFormDialogData {
 export class IconFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private iconService = inject(IconService);
+  private navigationService = inject(NavigationService);
   private snackBar = inject(MatSnackBar);
   private cdr = inject(ChangeDetectorRef);
   public dialogRef = inject(MatDialogRef<IconFormComponent>);
@@ -116,9 +118,21 @@ export class IconFormComponent implements OnInit {
           materialIconName: formValue.iconSource === 'material' ? formValue.materialIconName : null
         };
 
-        // For edit mode, preserve the position
+        // For create mode, set parent to current folder if inside one
+        if (this.data.mode === 'create') {
+          const currentFolder = this.navigationService.getCurrentFolderValue();
+          if (currentFolder && currentFolder.id) {
+            // Use IRI format for parent
+            iconData.parent = `/api/icons/${currentFolder.id}`;
+          } else {
+            iconData.parent = null; // Root level
+          }
+        }
+
+        // For edit mode, preserve the position and parent
         if (this.data.mode === 'edit' && this.data.icon) {
           iconData.position = this.data.icon.position;
+          iconData.parent = this.data.icon.parent;
         }
 
         let savedIcon: Icon;

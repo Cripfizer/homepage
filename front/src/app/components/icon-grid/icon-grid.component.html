@@ -15,35 +15,44 @@
   </div>
 }
 
-<!-- Empty state -->
-@if (!isLoading && !error && icons.length === 0) {
-  <div class="empty-container">
-    <mat-icon class="empty-icon">inbox</mat-icon>
-    <p class="empty-title">No icons yet</p>
-    <p class="empty-text">Click the "Add New" button to create your first icon!</p>
-  </div>
-}
+<!-- Icon grid - always show when not loading and no error -->
+@if (!isLoading && !error) {
+  <div class="icon-grid-wrapper">
+    <div class="icon-grid"
+         cdkDropList
+         cdkDropListOrientation="horizontal"
+         [cdkDropListAutoScrollStep]="20"
+         (cdkDropListDropped)="onDrop($event)"
+         [@folderTransition]="animationState">
 
-<!-- Icon grid -->
-@if (!isLoading && !error && icons.length > 0) {
-  <div class="icon-grid">
-    <!-- Regular icons -->
-    @for (icon of icons; track icon.id) {
-      <app-icon-item
-        [icon]="icon"
-        [editMode]="editMode"
-        (folderClick)="onFolderClick($event)"
-        (editClick)="onEditClick($event)"
-        (deleteClick)="onDeleteClick($event)"
-      ></app-icon-item>
-    }
+      <!-- Empty state message (shown when no icons) -->
+      @if (icons.length === 0) {
+        <div class="empty-message-in-grid">
+          <mat-icon class="empty-icon">folder_open</mat-icon>
+          <p class="empty-text">Dossier vide</p>
+        </div>
+      }
 
-    <!-- Add new button -->
-    <div class="add-new-container" (click)="onAddNewClick()">
-      <div class="add-new-card">
-        <mat-icon class="add-icon">add_circle_outline</mat-icon>
+      <!-- Regular icons -->
+      @for (icon of icons; track icon.id) {
+        <div class="icon-drag-wrapper" cdkDrag [cdkDragDisabled]="!editMode">
+          <app-icon-item
+            [icon]="icon"
+            [editMode]="editMode"
+            (folderClick)="onFolderClick($event)"
+            (editClick)="onEditClick($event)"
+            (deleteClick)="onDeleteClick($event)"
+          ></app-icon-item>
+        </div>
+      }
+
+      <!-- Add new button - always visible -->
+      <div class="add-new-container" (click)="onAddNewClick()">
+        <div class="add-new-card">
+          <mat-icon class="add-icon">add_circle_outline</mat-icon>
+        </div>
+        <div class="add-text">Ajouter</div>
       </div>
-      <div class="add-text">Ajouter</div>
     </div>
   </div>
 }
