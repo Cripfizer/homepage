@@ -7,6 +7,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    upload_directory: '%kernel.project_dir%/public/uploads/icons'
 
 services:
     # default configuration for services in *this* file
@@ -21,3 +22,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Configuration for IconUploadController
+    App\Controller\IconUploadController:
+        arguments:
+            $uploadDir: '%upload_directory%'
+
+    # Event Listener for image processing with Vich upload
+    App\EventListener\ImageUploadListener:
+        arguments:
+            $uploadDirectory: '%upload_directory%'
+        tags:
+            # PRE_UPLOAD: Supprime l'ancien fichier avant le nouvel upload
+            - { name: kernel.event_listener, event: vich_uploader.pre_upload, method: onPreUpload }
+            # POST_UPLOAD: Convertit et redimensionne après l'upload
+            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: onPostUpload }

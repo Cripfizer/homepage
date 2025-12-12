@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Icon;
 use App\Repository\IconRepository;
+use App\Service\ImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +20,9 @@ class IconUploadController extends AbstractController
     public function __construct(
         private IconRepository $iconRepository,
         private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private ImageService $imageService,
+        private string $uploadDir
     ) {
     }
 

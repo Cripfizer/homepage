@@ -44,6 +44,29 @@ export class IconGridComponent implements OnInit, OnDestroy {
   animationState: 'visible' | 'hidden' = 'visible'; // For animation control
   currentFolder: Icon | null = null;
 
+  /**
+   * Get icons of type 'link' sorted by position
+   */
+  get linkIcons(): Icon[] {
+    return this.icons.filter(icon => icon.type === 'link').sort((a, b) => a.position - b.position);
+  }
+
+  /**
+   * Get icons of type 'folder' sorted by position
+   */
+  get folderIcons(): Icon[] {
+    return this.icons.filter(icon => icon.type === 'folder').sort((a, b) => a.position - b.position);
+  }
+
+  /**
+   * Get all icons sorted by category (links first, then folders)
+   * Used for drag & drop operations
+   */
+  get sortedIcons(): Icon[] {
+    return [...this.linkIcons, ...this.folderIcons];
+  }
+
+
   ngOnInit(): void {
     // Subscribe to navigation changes
     this.navigationService.getCurrentFolder()
@@ -195,26 +218,77 @@ export class IconGridComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handle drag and drop reordering
+   * Handle drag and drop reordering for links
    */
-  onDrop(event: CdkDragDrop<Icon[]>): void {
+  onDropLinks(event: CdkDragDrop<Icon[]>): void {
     if (!this.editMode) {
-      return; // Only allow reordering in edit mode
+      return;
     }
 
-    // Store original order in case we need to revert
+    // Store original order
     const originalIcons = [...this.icons];
 
-    // Reorder the icons array
-    moveItemInArray(this.icons, event.previousIndex, event.currentIndex);
+    // Work with link icons
+    const links = [...this.linkIcons];
+    moveItemInArray(links, event.previousIndex, event.currentIndex);
 
-    // Update position property on each icon
-    const updates = this.icons.map((icon, index) => ({
+    // Combine with folders to create full sorted list
+    const sorted = [...links, ...this.folderIcons];
+
+    // Update positions for ALL icons (links + folders)
+    const updates = sorted.map((icon, index) => ({
       id: icon.id!,
       position: index
     }));
 
+    // Update local icons array
+    this.icons = this.icons.map(icon => {
+      const update = updates.find(u => u.id === icon.id);
+      return update ? { ...icon, position: update.position } : icon;
+    });
+
     // Save to API
+    this.saveReorder(updates, originalIcons);
+  }
+
+  /**
+   * Handle drag and drop reordering for folders
+   */
+  onDropFolders(event: CdkDragDrop<Icon[]>): void {
+    if (!this.editMode) {
+      return;
+    }
+
+    // Store original order
+    const originalIcons = [...this.icons];
+
+    // Work with folder icons
+    const folders = [...this.folderIcons];
+    moveItemInArray(folders, event.previousIndex, event.currentIndex);
+
+    // Combine with links to create full sorted list
+    const sorted = [...this.linkIcons, ...folders];
+
+    // Update positions for ALL icons (links + folders)
+    const updates = sorted.map((icon, index) => ({
+      id: icon.id!,
+      position: index
+    }));
+
+    // Update local icons array
+    this.icons = this.icons.map(icon => {
+      const update = updates.find(u => u.id === icon.id);
+      return update ? { ...icon, position: update.position } : icon;
+    });
+
+    // Save to API
+    this.saveReorder(updates, originalIcons);
+  }
+
+  /**
+   * Save reordering to API
+   */
+  private saveReorder(updates: { id: number; position: number }[], originalIcons: Icon[]): void {
     this.iconService.reorderIcons(updates).subscribe({
       next: () => {
         this.snackBar.open('Ordre sauvegardé', 'OK', { duration: 2000 });

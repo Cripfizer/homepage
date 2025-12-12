@@ -18,12 +18,7 @@
 <!-- Icon grid - always show when not loading and no error -->
 @if (!isLoading && !error) {
   <div class="icon-grid-wrapper">
-    <div class="icon-grid"
-         cdkDropList
-         cdkDropListOrientation="horizontal"
-         [cdkDropListAutoScrollStep]="20"
-         (cdkDropListDropped)="onDrop($event)"
-         [@folderTransition]="animationState">
+    <div class="icon-grid" [@folderTransition]="animationState">
 
       <!-- Empty state message (shown when no icons) -->
       @if (icons.length === 0) {
@@ -33,16 +28,52 @@
         </div>
       }
 
-      <!-- Regular icons -->
-      @for (icon of icons; track icon.id) {
-        <div class="icon-drag-wrapper" cdkDrag [cdkDragDisabled]="!editMode">
-          <app-icon-item
-            [icon]="icon"
-            [editMode]="editMode"
-            (folderClick)="onFolderClick($event)"
-            (editClick)="onEditClick($event)"
-            (deleteClick)="onDeleteClick($event)"
-          ></app-icon-item>
+      <!-- Links section -->
+      @if (linkIcons.length > 0) {
+        <div class="category-section links-section"
+             cdkDropList
+             [cdkDropListData]="linkIcons"
+             cdkDropListOrientation="horizontal"
+             [cdkDropListAutoScrollStep]="20"
+             (cdkDropListDropped)="onDropLinks($event)">
+          @for (icon of linkIcons; track icon.id) {
+            <div class="icon-drag-wrapper" cdkDrag [cdkDragDisabled]="!editMode">
+              <app-icon-item
+                [icon]="icon"
+                [editMode]="editMode"
+                (folderClick)="onFolderClick($event)"
+                (editClick)="onEditClick($event)"
+                (deleteClick)="onDeleteClick($event)"
+              ></app-icon-item>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Separator between categories -->
+      @if (linkIcons.length > 0 && folderIcons.length > 0) {
+        <div class="category-separator"></div>
+      }
+
+      <!-- Folders section -->
+      @if (folderIcons.length > 0) {
+        <div class="category-section folders-section"
+             cdkDropList
+             [cdkDropListData]="folderIcons"
+             cdkDropListOrientation="horizontal"
+             [cdkDropListAutoScrollStep]="20"
+             (cdkDropListDropped)="onDropFolders($event)">
+          @for (icon of folderIcons; track icon.id) {
+            <div class="icon-drag-wrapper" cdkDrag [cdkDragDisabled]="!editMode">
+              <app-icon-item
+                [icon]="icon"
+                [editMode]="editMode"
+                (folderClick)="onFolderClick($event)"
+                (editClick)="onEditClick($event)"
+                (deleteClick)="onDeleteClick($event)"
+              ></app-icon-item>
+            </div>
+          }
         </div>
       }
 

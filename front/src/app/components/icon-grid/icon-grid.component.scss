@@ -3,12 +3,21 @@
   width: 100%;
 }
 
-// Grid container - auto-fit with minimum size
+// Grid container - flex layout to stack sections
 .icon-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Category sections (links and folders)
+.category-section {
   display: grid;
   grid-template-columns: repeat(auto-fill, 70px);
   gap: 20px 16px; // vertical horizontal
-  padding: 16px;
   width: 100%;
   box-sizing: border-box;
   justify-content: start; // Align items to the left
@@ -57,6 +66,13 @@
   }
 }
 
+// Category separator - visual break between links and folders
+.category-separator {
+  width: 100%;
+  height: 20px; // Small vertical space
+  margin: 8px 0;
+}
+
 .cdk-drag-preview {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   opacity: 0.9;
@@ -79,13 +95,15 @@
   transition: none; // Disable animation to avoid flash effect
 }
 
-// Empty message (shown in grid when no icons)
+// Empty message (shown when no icons)
 .empty-message-in-grid {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  width: 70px;
+  width: 100%;
+  padding: 40px 20px;
 
   .empty-icon {
     font-size: 48px;
@@ -96,10 +114,9 @@
 
   .empty-text {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 11px;
+    font-size: 14px;
     margin: 0;
     text-align: center;
-    max-width: 70px;
   }
 }
 
@@ -110,6 +127,8 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  width: 70px;
+  margin-top: 8px;
 
   &:hover .add-new-card {
     border-color: rgba(255, 255, 255, 0.5);

@@ -214,6 +214,14 @@ class Icon
         return $this;
     }
 
+    /**
+     * Get the raw filename without baseURL (for internal use)
+     */
+    public function getImageFilename(): ?string
+    {
+        return $this->imageUrl;
+    }
+
     public function getMaterialIconName(): ?string
     {
         return $this->materialIconName;

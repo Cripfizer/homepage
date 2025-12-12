@@ -27,6 +27,12 @@
           </mat-error>
         </mat-form-field>
 
+        <div class="remember-me">
+          <mat-checkbox formControlName="rememberMe">
+            Se souvenir de moi
+          </mat-checkbox>
+        </div>
+
         <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid" class="full-width">
           Login
         </button>

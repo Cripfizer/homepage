@@ -34,14 +34,22 @@ export class AuthService {
     });
   }
 
-  login(email: string, password: string): Observable<LoginResponse> {
+  login(email: string, password: string, rememberMe: boolean = false): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiUrl}/api/login`, {
       email,
       password
     }).pipe(
       tap(response => {
-        // Store the token in localStorage
-        localStorage.setItem(this.TOKEN_KEY, response.token);
+        // Store the token based on rememberMe preference
+        if (rememberMe) {
+          // Persistent storage (survives browser close)
+          localStorage.setItem(this.TOKEN_KEY, response.token);
+          sessionStorage.removeItem(this.TOKEN_KEY); // Clean session storage
+        } else {
+          // Session storage (cleared when browser closes)
+          sessionStorage.setItem(this.TOKEN_KEY, response.token);
+          localStorage.removeItem(this.TOKEN_KEY); // Clean local storage
+        }
         // Update current user
         this.currentUserSubject.next(response.user);
       })
@@ -50,11 +58,13 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.TOKEN_KEY);
     this.currentUserSubject.next(null);
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    // Check both storages (localStorage for remember me, sessionStorage for temporary)
+    return localStorage.getItem(this.TOKEN_KEY) || sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   isAuthenticated(): boolean {

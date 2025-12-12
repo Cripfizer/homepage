@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 
@@ -20,6 +21,7 @@ import { AuthService } from '../../services/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatSnackBarModule
   ],
   templateUrl: './login.component.html',
@@ -33,7 +35,8 @@ export class LoginComponent {
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    rememberMe: [true] // Default to true for better UX
   });
 
   ngOnInit() {
@@ -45,9 +48,9 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+      const { email, password, rememberMe } = this.loginForm.value;
 
-      this.authService.login(email, password).subscribe({
+      this.authService.login(email, password, rememberMe).subscribe({
         next: (response) => {
           this.snackBar.open('Login successful!', 'Close', {
             duration: 3000,

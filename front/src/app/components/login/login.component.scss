@@ -16,6 +16,14 @@
   margin-bottom: 16px;
 }
 
+.remember-me {
+  margin-bottom: 20px;
+
+  mat-checkbox {
+    font-size: 14px;
+  }
+}
+
 .register-link {
   margin-top: 16px;
   text-align: center;
