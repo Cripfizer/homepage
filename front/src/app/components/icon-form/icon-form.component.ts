@@ -64,6 +64,7 @@ export class IconFormComponent implements OnInit {
       type: [icon?.type || 'link', Validators.required],
       url: [icon?.url || '', []],
       backgroundColor: [icon?.backgroundColor || '#4285F4', Validators.required],
+      iconColor: [icon?.iconColor || '#FFFFFF', Validators.required],
       iconSource: [defaultIconSource, Validators.required],
       materialIconName: [icon?.materialIconName || (icon?.type === 'folder' ? 'folder' : 'link')],
       imageFile: [null]
@@ -114,7 +115,8 @@ export class IconFormComponent implements OnInit {
           title: formValue.title,
           type: formValue.type,
           url: formValue.url || null,
-          backgroundColor: formValue.backgroundColor
+          backgroundColor: formValue.backgroundColor,
+          iconColor: formValue.iconColor
         };
 
         // Handle icon source

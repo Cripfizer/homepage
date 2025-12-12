@@ -50,13 +50,20 @@
       <mat-radio-button value="upload">Upload Image</mat-radio-button>
     </mat-radio-group>
 
-    <!-- Material Icon Name (shown if iconSource is 'material') -->
+    <!-- Material Icon Configuration (shown if iconSource is 'material') -->
     @if (iconForm.get('iconSource')?.value === 'material') {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nom de l'icône Material</mat-label>
         <input matInput formControlName="materialIconName" placeholder="neurology, folder, home, etc.">
         <mat-hint>En minuscules. Voir: <a href="https://fonts.google.com/icons" target="_blank">Material Icons</a></mat-hint>
       </mat-form-field>
+
+      <!-- Icon Color (only for Material icons) -->
+      <div class="color-picker-container">
+        <label class="color-label">Couleur de l'icône</label>
+        <input type="color" formControlName="iconColor" class="color-picker">
+        <span class="color-value">{{ iconForm.get('iconColor')?.value }}</span>
+      </div>
     }
 
     <!-- Image Upload (shown if iconSource is 'upload') -->

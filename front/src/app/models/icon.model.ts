@@ -6,6 +6,7 @@ export interface Icon {
   materialIconName?: string;
   imageSize?: 'small' | 'medium' | 'large';
   backgroundColor?: string;
+  iconColor?: string;
   url?: string;
   parent?: string | null;
   position: number;

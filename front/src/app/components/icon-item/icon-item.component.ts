@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Icon } from '../../models/icon.model';
-import { getContrastColor } from '../../utils/color.utils';
 
 @Component({
   selector: 'app-icon-item',
@@ -20,13 +19,11 @@ export class IconItemComponent {
   @Output() deleteClick = new EventEmitter<Icon>();
 
   /**
-   * Get the contrast color (text/icon color) based on the background color
+   * Get the icon color (user-defined color for Material icons)
    */
-  getTextColor(): string {
-    if (!this.icon.backgroundColor) {
-      return '#FFFFFF'; // Default to white if no background color
-    }
-    return getContrastColor(this.icon.backgroundColor);
+  getIconColor(): string {
+    // Use user-defined icon color, or default to white
+    return this.icon.iconColor || '#FFFFFF';
   }
 
   /**

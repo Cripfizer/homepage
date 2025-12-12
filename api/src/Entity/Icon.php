@@ -87,6 +87,11 @@ class Icon
     #[Assert\Regex(pattern: '/^#[0-9A-Fa-f]{6}$/')]
     private ?string $backgroundColor = null;
 
+    #[ORM\Column(length: 7, nullable: true)]
+    #[Groups(['icon:read', 'icon:write'])]
+    #[Assert\Regex(pattern: '/^#[0-9A-Fa-f]{6}$/')]
+    private ?string $iconColor = null;
+
     #[ORM\Column(length: 500, nullable: true)]
     #[Groups(['icon:read', 'icon:write'])]
     #[Assert\Length(max: 500)]
@@ -242,6 +247,18 @@ class Icon
     public function setBackgroundColor(?string $backgroundColor): static
     {
         $this->backgroundColor = $backgroundColor;
+
+        return $this;
+    }
+
+    public function getIconColor(): ?string
+    {
+        return $this->iconColor;
+    }
+
+    public function setIconColor(?string $iconColor): static
+    {
+        $this->iconColor = $iconColor;
 
         return $this;
     }
