@@ -28,14 +28,14 @@ export class AuthService {
   }
 
   register(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${environment.apiUrl}/api/register`, {
+    return this.http.post<User>(`${environment.apiUrl}/register`, {
       email,
       password
     });
   }
 
   login(email: string, password: string, rememberMe: boolean = false): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/api/login`, {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/login`, {
       email,
       password
     }).pipe(

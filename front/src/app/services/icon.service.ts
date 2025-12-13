@@ -16,7 +16,7 @@ interface HydraCollection {
 })
 export class IconService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/icons`;
+  private apiUrl = `${environment.apiUrl}/icons`;
 
   getIcons(parentId?: number): Observable<Icon[]> {
     let url = this.apiUrl;
